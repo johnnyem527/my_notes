@@ -1,0 +1,136 @@
+1. django-admin startproject first_project
+   python manage.py runserver
+   python manage.py startapp first_app
+
+2. os.path.join 为啥要这么用，是因为不同操作系统/或\的格式不固定
+
+3. 适配templates路径，settings.py
+    TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
+    'DIRS': [TEMPLATES_DIR,],
+    views.py:
+    def index(request):
+    my_dict = {'insert_me': 'I love Emma'}
+    return render(request, 'first_app/index.html', context=my_dict)
+    index.html:
+    <h1>Hello, this is my first app</h1>
+    <hr>
+    {{ insert_me }}
+
+4. 适配static路径，setting.py
+    STATIC_DIR = os.path.join(BASE_DIR, "static")
+    STATICFILES_DIRS = [
+        STATIC_DIR,
+    ]
+    index.html:
+    <!DOCTYPE html>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static "css/app.css"%}">
+    <image src="{% static "images/Emma.jpg" %}" alt="emma"/>
+
+5. Django MTV Model Templates views
+
+6. python manage.py makemigrations first_app
+   python manage.py migrate
+
+7. 在admin.py里面注册model
+
+8. 创建管理员账号：python manage.py createsuperuser
+
+9. 在model里面定义__str__的意义是能在django admin里面看到有意义的显示
+
+10. django Form的用法：
+    app中创建forms.py:
+        from django import forms
+        class FormName(forms.Form):
+            name = forms.CharField()
+            email = forms.EmailField()
+            text = forms.CharField(widget=forms.Textarea)
+    view中创建好方法：
+    from . import forms
+    def login_page(request):
+        form = forms.FormName()
+        （通过request可以获取POST数据）
+        if request.method == 'POST':
+            form = forms.FormName(request.POST)
+            if form.is_valid():
+                # Do Something code
+                print("Validation success!")
+                print("Name: " + form.cleaned_data['name'])
+                print("Email: " + form.cleaned_data['email'])
+                print("Text: " + form.cleaned_data['text'])
+        return render(request, 'first_app/form_page.html', {'form' : form})
+    在form_page.html中：
+    <form method="POST">
+        {% csrf_token %} cross-site-request-forgery
+        {{ form.as_p }}
+        <input type="submit" class="btn btn-primary" value="Submit">
+    </form>
+
+11. django urls讲究：
+    能使用这种url <a href="{% url 'first_app:other' %}"></a> 的前提是：
+    1. 在urls.py里面有app_name = 'anyname'
+    2. 在urls.py的urlpatterns里面 url()方法的第三个参数name='anyname'
+    这两个name刚好对应上面href=里面的两个名字！！！
+    注意，‘’里面不能有空格，因为是严格对应名字
+
+12. 自定义filter
+    1. 在app中创建新文件夹templatetags, 并在其中创建__init__.py为了让django能够初始化这个模块
+    2. 在这个文件夹里创建任意名称的.py文件：
+        from django import template
+        register = template.Library()
+        @register.filter(name='cutting')
+        def cutting(value, arg):
+            return value.replace(arg, '')
+    3. 在.html里 <p>{{ text|cutting:"wo" }}</p>
+
+13. 两个重点参数：
+    *args ：will give you all function parameters as a tuple
+            def foo(*args):
+                for a in args:
+                    print(a)
+            foo(1)
+            -> 1
+            foo(1,2,3)
+            -> 1
+            -> 2
+            -> 3
+    **kwargs : will give you all keyword arguments except for those corresponding parameter as a dictionary
+            def bar(**kwargs):
+                 for a in kwargs:
+                    print(a, kwargs[a])
+            
+            bar(name='one', age=27)
+            -> age 27
+            -> name one
+            无序的是因为是字典
+
+
+14. 什么是mixin
+    A mixin is a special kind of multiple inheritance. 
+    There are two main situations where mixins are used:
+    You want to provide a lot of optional features for a class.
+    You want to use one particular feature in a lot of different classes.
+    For an example of number one, consider werkzeug's request and response system. 
+    I can make a plain old request object by saying:
+    from werkzeug import BaseRequest
+    class Request(BaseRequest):
+        pass
+    f I want to add accept header support, I would make that
+    from werkzeug import BaseRequest, AcceptMixin
+    class Request(BaseRequest, AcceptMixin):
+        pass
+    If I wanted to make a request object that supports accept headers, etags, authentication, and user agent support, I could do this:
+    from werkzeug import BaseRequest, AcceptMixin, ETagRequestMixin, UserAgentMixin, AuthenticationMixin
+    class Request(BaseRequest, AcceptMixin, ETagRequestMixin, UserAgentMixin, AuthenticationMixin):
+        pass
+    The difference is subtle, but in the above examples, the mixin classes weren't made to stand on their own. 
+    In more traditional multiple inheritance, the AuthenticationMixin (for example) would probably be something 
+    more like Authenticator. That is, the class would probably be designed to stand on its own.
+    
+15. # 我们规定一篇文章只能对应一个分类，但是一个分类下可以有多篇文章，所以我们使用的是 ForeignKey，即一对多的关联关系。
+    # 而对于标签来说，一篇文章可以有多个标签，同一个标签下也可能有多篇文章，所以我们使用 ManyToManyField，表明这是多对多的关联关系。
+    # 而onetoone关系可以理解为把一张本来应该为一个整体的表拆解成了多个，而他们存在一对一的关系
+
+16. category = models.ForeignKey('blog.Category', default=1, on_delete=models.CASCADE)
+    新添加的foreign key可能会出现需要默认值的情况，这个时候只需要设置固定值为外键的其中一个pk
+    就可以了，一般为1

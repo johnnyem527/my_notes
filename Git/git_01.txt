@@ -1,0 +1,87 @@
+1. bash常见命令
+    pwd: print working directory
+    cd /d 切换到d盘
+    cd .. 退回上一层
+    mkdir 创建文件夹
+    rm -r 删除文件夹
+    mv    移动文件
+    cat   查看文件内容
+
+2. vim使用方法
+    q: 退出
+    i  进入插入模式
+    w  保存文件
+    :wq 保存并退出
+
+Git仓库4层结构：
+    file system
+    staging area
+    committed
+    pushed
+
+3. Git常用命令（Git分本地仓库和远程云仓库，可以只用本地）
+    进去项目文件夹初始化git         git init
+    首次需适配用户名和邮箱          git config --global user.name "johnnyem527"
+                                  git config --global user.email "12313024@qq.com"
+                                  或者直接编辑配置文件： git config --global --edit
+
+    查看git目前状态                git status
+    添加文件到git stage层          git add
+    添加当前路径的所有文件和文件夹   git add .
+    删除刚添加的文件unstage        git rm --cached <file>...
+    提交变更并附上备注             git commit -m "bla bla bla"
+    修改提交的信息文件             git commit --amend --reset-author
+    git日志一行显示                git log --oneline
+    git日志图表显示               git log --graph
+    获取远程git仓库代码           git pull
+
+提交云github:
+1. create a new repository on the command line
+echo "# test-app" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/johnnyem527/test-app.git
+git push -u origin master
+
+2. push an existing repository from the command line
+git remote add origin https://github.com/johnnyem527/test-app.git
+git push -u origin master
+
+ssh keys
+作用：
+Using the SSH protocol, you can connect and authenticate to remote servers and services. 
+With SSH keys, you can connect to GitHub without supplying your username or password at each visit.
+配置SSH keys的步骤：
+1. 首先检查本机是否存在SSH keys
+    ls -al ~/.ssh
+2. 生成新的ssh keys
+    ssh-keygen
+    一路确认
+3. 查看生成的id_rsa.pub
+    cat ~/.ssh/id_rsa.pub
+4. 把查到的keys复制到github -> setting -> SSH and GPG keys -> new ssh key
+
+1. private key is used to encrypt
+2. public key is used to decrypt
+
+git push -u origin master
+The -u tells Git to remember the parameters, so that next time we can simply run git push and Git will know what to do.
+因为正式场景下，Git一般为团队合作，除了master分支之外，还会有其他很多branch，
+如果单单使用git push命令，git并不知道你是需要在哪个分支中push或者pull，
+而这个-u origin master正是起到了关联默认分支的作用，设置默认分支为master分支，
+这样，以后再需要git push或者git pull时，就无需输入-u 。。。这些参数了
+
+编写readme.md并提交
+vim readme.md
+git add readme.md
+git commit -m "readme file upload"
+git push
+    
+一台设备需要几个ssh keys???
+An SSH key is used for the user to be authenticated and identified into GitHub.
+It is common that, for every different device a user uses to access GitHub, 
+he generates a different ssh-key and register/link it to his GitHub's account.
+When you control a project, you control access and permissions based on users, and not SSH keys.
+So, when you (as a user) setup your git environment you can create only one ssh-key for each machine 
+you would like to give permission to your GitHub's account.

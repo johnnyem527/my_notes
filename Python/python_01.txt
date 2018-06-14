@@ -1,0 +1,115 @@
+1. def __repr__(self):
+        return "<Movie: {}>".format(self.name)
+   # 方法相当于Java的toString
+
+2. movies_watched = list(filter(lambda movie: movie.watched, self.movies))
+   # filter配和lambda方法
+
+3. with open('my_file.txt', 'w') as f:
+   # 用with这种结构是为了不用写 f.close(), with结构自动关闭
+
+4. for line in content[1:]:
+   # 用切割发控制循环
+
+5. def json(self):
+    return {
+        'name': self.name,
+        'movies': [
+            movie.json() for movie in self.movies
+        ]
+    }
+
+6. with open('my_file.txt', 'w') as f:
+    json.dump(user.json(), f)
+
+7. return Movie(**json_data)
+   # **两颗星表示的你在传的是一个名称集合的数据（a set of name parameters）
+   # 不用再把所有的参数都按顺序写出来来创建对象了
+
+8. SQL里面凡是不是字段或者SQL关键字的全部都要用引号包裹！数字例外
+
+9. SQL关键字LIKE
+   SELECT * FROM customers WHERE last_name LIKE '%o%'
+   %:任意字符串
+   _:任意单个字符
+
+10. SQL FULL JOIN = LEFT JOIN + RIGHT JOIN
+
+11. 聚合方法要配合GROUP BY使用
+
+12. CREATE SEQUENCE users_id_seq START AT 3;
+    在PG里面没有AUTO INCREMENT，只有SEQUENCE
+
+13. 可以给多个字段同时创建INDEX，然后在Query的时候WHERE就需要加多个条件
+
+14. SQL VIEW是用来保存一些常用的SQL结果，但实际上是保存了SQL，方便每次查看
+    CREATE VIEW total_revenue_per_customer AS
+    SELECT customers.first_name, customers.last_name, SUM(items.price) FROM customers
+    INNER JOIN purchases ON customers.id = purchases.customer_id
+    INNER JOIN items ON items.id = purchases.item_id
+    GROUP BY customers.id
+
+15. 可以INSERT 记录到 VIEW，但是前提是VIEW不是由聚合生成的，如GROUP BY
+
+16. PG专有语法WITH LOCAL CHECK OPTION, 自动检查各种条件，
+    但是此语法的作用域只是在当前SQL，使用WITH CASCADE CHECK OPTION可以解决这个问题
+
+17. HAVING使用在GROUP BY后面的条件语句，相当于WHERE，但是由于WHERE不能放在
+    GROUP BY后面。注意的是SELECT ... AS "xxx"这个字段别名暂时还不用，只能用原名，
+    另外，HAVING后面才能还能用ORDER BY
+    SELECT customers.id, customers.first_name, customers.last_name, COUNT(customers.id) AS "Purchase times" FROM customers
+    INNER JOIN purchases ON customers.id = purchases.customer_id
+    GROUP BY customers.id 
+    HAVING COUNT(customers.id) > 2 
+    ORDER BY "Purchase times" DESC;
+
+18. SELECT TO_CHAR()
+    SELECT TO_TIMESTAMP()
+
+19. 枚举类型CREATE TYPE mood AS ENUM('extremely happy', 'unhappy', 'ok', 'SOSO');
+
+20. PG SQL里面的id AUTO INCREMENT: id SERIAL PRIMARY KEY
+
+21. 技巧！(email,) 这样可以让python认为这是个tuple而不是优先级运算
+
+22. 连接数据库最好用连接池
+    connection_pool = pool.SimpleConnectionPool(1,
+                                            10,
+                                            user='postgres',
+                                            password='postgresql2018',
+                                            database='learning',
+                                            host='localhost'
+                                            )
+
+23. 重点！关于with的lifecycle ->  def __enter__(self): 到 def __exit__(self, exc_type, exc_val, exc_tb):
+
+24. 重点！在python class中被所有对象共享的属性定义：
+    class Database:
+    connection_pool = None
+
+    def initialise(self):
+        Database.connection_pool = pool.SimpleConnectionPool(1,
+                                                             1,
+                                                             user='postgres',
+                                                             password='postgresql2018',
+                                                             database='learning',
+                                                             host='localhost'
+                                                             )
+
+25. @staticmethod和@classmethod
+
+26. Python class里面如果要把属性搞成私有的，就在属性前面加两个下划线！
+    __connection_pool = None
+
+27. 重点 **kwargs（keyword arguments） 的意思是 any named parameters
+    @classmethod
+    def initialise(cls, **kwargs):
+        cls.__connection_pool = pool.SimpleConnectionPool(1,
+                                                        1,
+                                                        **kwargs
+                                                        )
+     主函数是：
+     Database.initialise(user='postgres',
+                    password='postgresql2018',
+                    database='learning',
+                    host='localhost')

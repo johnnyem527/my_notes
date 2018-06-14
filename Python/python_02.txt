@@ -1,0 +1,35 @@
+1. What is API? API enable communication（example: restaurant）
+有两种API
+SOAP: 旧
+REST: 新流行REpresentational State Transfer
+      It is a way or organising and exposing an API to the outside world
+      Client-Server Interface
+      Stateless
+      Cacheable
+      Uniform Interface
+
+2. dict([('hi','emma'), ('ha', 'chloe')])  =>
+   {'hi':'emma', 'ha': 'chloe'} dict函数可以把元组列表转化成字典形式的数据！
+
+3. 二进制转化为string的方法： content.decode('utf-8')
+
+4. Python居然有多继承
+   encapsulation的精髓是在方法名前面加上双下划线__来达到黑匣子的作用
+   程序设计思路！重点是把暴露给用户的public方法（API）关联的其他方法
+   全部私有化了，这样用户只需要调用public的方法，而无需要考虑其他关联
+   方法的实现！
+
+5. 两个相同作用的expressions 
+   to_convert = amount if amount is not None else self.amount
+   to_convert = amount or self.amount
+
+6. 使用assert断言是学习python一个非常好的习惯，python assert 断言句语格式及用法很简单。
+   在没完善一个程序之前，我们不知道程序在哪里会出错，与其让它在运行最后崩溃，不如在出现错误条件时就崩溃，
+   这时候就需要assert断言的帮助。本文主要是讲assert断言的基础知识。
+
+7. (val for val in list_random)这句话原来是生成了一个generator, 但是
+   [val for val in list_random if val > 10]这样又生成了一个list, 还能加条件判断
+
+8. "In {}: {:.2f}".format(currency.code, currency.in_currency(usd_amount))
+
+9. unittest主要用于测试单个class是不是运转正常
