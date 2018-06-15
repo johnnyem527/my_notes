@@ -1,0 +1,4 @@
+多光标选择
+    ALT + J
+    ALT + 鼠标左键
+    CTRL + SHIFT + ALT + J 相关全选

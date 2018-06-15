@@ -1,0 +1,26 @@
+方法一：
+    1. 查看远程仓库
+        git remote -v
+    2. 从远程获取最新版到本地
+        git fetch origin master
+    3. 比较本地的仓库和远程的参考区别
+        git log -p master.. origin/master
+    4. 把远程下载下来的代码合并到本地仓库
+        git merge origin/master
+
+方法二：
+    1. 查看远程仓库
+        git remote -v
+    2. 从远程获取最新版到本地，并在本地新建一个分支
+        git fetch origin master:temp
+    3. 比较本地的仓库和远程参考的区别, 即比较master分支和temp分支的不同
+        git diff temp
+    4. 合并temp分支到master分支
+        git merge temp
+    5. 如果不想要temp分支了，可以删除此分支
+        git branch -d temp
+    如果该分支没有合并到主分支会报错，可以用以下命令强制删除git branch -D <分支名>
+
+如果出现git push错误failed to push some refs to：
+    首先：git pull --rebase origin master
+    然后：git push origin master
