@@ -33,3 +33,6 @@ REST: 新流行REpresentational State Transfer
 8. "In {}: {:.2f}".format(currency.code, currency.in_currency(usd_amount))
 
 9. unittest主要用于测试单个class是不是运转正常
+
+10. 当list中的元素为dict时，去除重复元素，方法是转为为元组，因为元组可以hash化
+   [dict(t) for t in set([tuple(d.items()) for d in l])]
